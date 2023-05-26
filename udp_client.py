@@ -1,5 +1,6 @@
+from socket import *  # Import all functions from socket library
+
 import time
-from socket import *
 
 print("Welcome to the UDP client. Please enter your:-")
 firstName = input("First name: ")
