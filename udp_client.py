@@ -1,15 +1,22 @@
 import time
 from socket import *
 
-serverName = "192.168.1.10"
+print("Welcome to the UDP client. Please enter your:-")
+firstName = input("First name: ")
+lastName = input("Last name: ")
+serverName = input("Server name (IP address): ")
 serverPort = 8855
 clientSocket = socket(AF_INET, SOCK_DGRAM)
 broadcast_interval = 2
-MESSAGE_TEMPLATE = "{}"
+MESSAGE_TEMPLATE = "{} {}"
+
+print("-------------------------------------------------")
+print("-------------------------------------------------")
+
 
 while True:
-    message = MESSAGE_TEMPLATE.format("Baker Al-Sdeeq Dwaikat")
+    message = MESSAGE_TEMPLATE.format(firstName, lastName)
     clientSocket.sendto(message.encode(), (serverName, serverPort))
-    print("Broadcast message sent:", message)
+    print(f"Broadcast message {message} sent to server {serverName}")
 
     time.sleep(broadcast_interval)
