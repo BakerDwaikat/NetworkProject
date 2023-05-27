@@ -19,5 +19,4 @@ while True:
     message = MESSAGE_TEMPLATE.format(firstName, lastName)
     clientSocket.sendto(message.encode(), (serverName, serverPort))
     print(f"Broadcast message {message} sent to server {serverName}")
-
     time.sleep(broadcast_interval)
