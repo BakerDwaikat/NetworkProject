@@ -17,7 +17,7 @@ def not_found(ip, port):
     dedicated_socket.send(
         "\r\n".encode())  # HTML document containing a message indicating that the requested resource was not found
     # includes information about our team's names and IDs ALSO IP and port of the server.
-    not_found_html = """<html>
+    not_found_html = f"""<html>
                         <head>
                         <title>Error 404</title>
                         </head>
@@ -31,10 +31,10 @@ def not_found(ip, port):
                         <p style='font-weight: bold;'>Ahmad Mtera - 1200607</p><br/>
                         </div>
                         <div style='justify-content: center; align-items: center; height: 50vh; text-align: center;font-size: 24px;'>
-                        f"<p>Client IP: {ip}
+                        <p>Client IP: {ip}
                         </p></br>
                         <p>
-                        f"Client Port #: {port}
+                        Client Port #: {port}
                         </p>
                         </div>
                         </body>
@@ -56,7 +56,8 @@ while True:
 
     if object_URL == '/' or object_URL == '/index.html' or object_URL == '/main_en.html' or object_URL == '/en':  # Serving English main page file
         print(os.path)
-        if os.path.exists("./") or os.path.exists("./index.html") or os.path.exists("./main_en.html") or os.path.exists("./en"):
+        if os.path.exists("../") or os.path.exists("./index.html") or os.path.exists(
+                "main_en.html") or os.path.exists("./en"):
             dedicated_socket.send("HTTP/1.1 200 OK\r\n".encode())
             dedicated_socket.send("Content-Type: text/html\r\n".encode())
             dedicated_socket.send("\r\n".encode())
