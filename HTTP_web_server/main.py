@@ -1,7 +1,7 @@
 import os
 from socket import *
 
-server_name = "192.168.0.174"
+server_name = "127.0.0.1"
 server_port = 9977
 listening_socket = socket(AF_INET, SOCK_STREAM)  # Creates a TCP socket for incoming requests
 listening_socket.bind((server_name, server_port))  # Assigns the host name (IP address) & port number to the server’s socket
