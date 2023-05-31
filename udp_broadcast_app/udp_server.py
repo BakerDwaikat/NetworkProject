@@ -3,22 +3,23 @@ from datetime import datetime
 from clients import *
 import netifaces as ni
 
-server_name = ni.ifaddresses('en0')[ni.AF_INET][0]['addr']  # Get the local host name (IP address) of this device
+server_name = ni.ifaddresses(ni.gateways()["default"][2][1])[ni.AF_INET][0]['addr']  # Get the local host name (IP address) of this device
 SERVER_PORT = 8855
 server_socket = socket(AF_INET, SOCK_DGRAM)  # Create a server socket with address family (IPv4) and socket type (UDP)
 server_socket.bind((server_name, SERVER_PORT))  # Assigns the host name (IP address) & port number to the server’s socket
 BROADCAST_INTERVAL = 2
 
-print("-------------------------------------------------")
-print("-------------------------------------------------")
+print("-----------------------------------------------")
+print("-----------------------------------------------")
 print("Welcome to the UDP server. Please enter your:-")
 first_name = input("First name: ")
 last_name = input("Last name: ")
 print("-------------------------------------------------")
 print("-------------------------------------------------")
 print("* SERVER INFO:")
-print(f"  ** Computer name: {first_name} {last_name}")
-print("  ** Server name (IP Address): ", server_name)
+print(f"  ** Owner: {first_name} {last_name}")
+print("  ** Name (IP Address):", server_name)
+print("  ** Port #:", SERVER_PORT)
 print('  ** The server is ready to receive packets.')
 print("-------------------------------------------------")
 print("-------------------------------------------------")

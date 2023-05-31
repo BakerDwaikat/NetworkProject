@@ -9,8 +9,8 @@ print("-----------------------------------------------")
 print("Welcome to the UDP client. Please enter your:-")
 first_name = input("First name: ")
 last_name = input("Last name: ")
-client_IP = ni.ifaddresses('en0')[ni.AF_INET][0]['addr']  # Get the local host name (IP address) of this device
-subnet_mask = ni.ifaddresses('en0')[ni.AF_INET][0]['netmask']  # Get the local host name (IP address) of this device
+client_IP = ni.ifaddresses(ni.gateways()["default"][2][1])[ni.AF_INET][0]['addr']  # Get the local host name (IP address) of this device
+subnet_mask = ni.ifaddresses(ni.gateways()["default"][2][1])[ni.AF_INET][0]['netmask']  # Get the local host name (IP address) of this device
 SERVER_PORT = 8855
 
 
