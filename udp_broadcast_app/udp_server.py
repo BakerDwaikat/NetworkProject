@@ -9,6 +9,8 @@ server_socket = socket(AF_INET, SOCK_DGRAM)  # Create a server socket with addre
 server_socket.bind((server_name, SERVER_PORT))  # Assigns the host name (IP address) & port number to the server’s socket
 BROADCAST_INTERVAL = 2
 
+print("-------------------------------------------------")
+print("-------------------------------------------------")
 print("Welcome to the UDP server. Please enter your:-")
 first_name = input("First name: ")
 last_name = input("Last name: ")

@@ -1,7 +1,7 @@
 import os
 from socket import *
 
-server_name = "127.0.0.1"
+server_name = "172.19.25.154"
 server_port = 9977
 listening_socket = socket(AF_INET, SOCK_STREAM)  # Creates a TCP socket for incoming requests
 listening_socket.bind((server_name, server_port))  # Assigns the host name (IP address) & port number to the server’s socket
@@ -47,6 +47,9 @@ def not_found(ip, port):
 while True:
     dedicated_socket, client_ip_and_port = listening_socket.accept()  # When a client sends a TCP connection request create a socket dedicated to this client
     HTTP_request = dedicated_socket.recv(2048).decode()
+    if HTTP_request == "" or HTTP_request.split(" ").__len__() < 2:
+        print("Empty request received. Nothing to do.")
+        continue  # Skip handling if received empty request.
     print("------------------------------------------------------------------------------------------------")
     object_URL = HTTP_request.split(" ")[1]  # Get URL of requested resource (e.g. default HTTP request starts with "GET / HTTP/1.1").
     print(f"** Serving client with IP ({client_ip_and_port[0]}) & port ({client_ip_and_port[1]}) with the following HTTP request of ({object_URL}):-")
@@ -55,24 +58,25 @@ while True:
     print("------------------------------------------------------------------------------------------------")
 
     if object_URL == '/' or object_URL == '/index.html' or object_URL == '/main_en.html' or object_URL == '/en':  # Serving English main page file
-        print(os.path)
-        if os.path.exists("../") or os.path.exists("./index.html") or os.path.exists(
-                "main_en.html") or os.path.exists("./en"):
+        if os.path.exists("./main_en.html"):
             dedicated_socket.send("HTTP/1.1 200 OK\r\n".encode())
             dedicated_socket.send("Content-Type: text/html\r\n".encode())
             dedicated_socket.send("\r\n".encode())
-            file = open("main_en.html", "rb")
+            file = open("./main_en.html", "rb")
             dedicated_socket.send(file.read())
+            file.close()
+            print("requested main")
         else:
             not_found(client_ip_and_port[0], client_ip_and_port[1])
 
     elif object_URL == '/ar':  # Serving Arabic main page file
-        if os.path.exists("main_ar.html"):
+        if os.path.exists("./main_ar.html"):
             dedicated_socket.send("HTTP/1.1 200 OK\r\n".encode())
             dedicated_socket.send("Content-Type: text/html\r\n".encode())
             dedicated_socket.send("\r\n".encode())
-            file = open("main_ar.html", "rb")
+            file = open("./main_ar.html", "rb")
             dedicated_socket.send(file.read())
+            file.close()
         else:
             not_found(client_ip_and_port[0], client_ip_and_port[1])
 
@@ -83,6 +87,7 @@ while True:
             dedicated_socket.send("\r\n".encode())
             file = open(f"./{object_URL}", "rb")
             dedicated_socket.send(file.read())
+            file.close()
         else:
             not_found(client_ip_and_port[0], client_ip_and_port[1])
 
@@ -93,6 +98,7 @@ while True:
             dedicated_socket.send("\r\n".encode())
             file = open(f"./{object_URL}", "rb")
             dedicated_socket.send(file.read())
+            file.close()
         else:
             not_found(client_ip_and_port[0], client_ip_and_port[1])
 
@@ -103,6 +109,7 @@ while True:
             dedicated_socket.send("\r\n".encode())
             file = open(f"./{object_URL}", "rb")
             dedicated_socket.send(file.read())
+            file.close()
         else:
             not_found(client_ip_and_port[0], client_ip_and_port[1])
 
@@ -113,12 +120,14 @@ while True:
             dedicated_socket.send("\r\n".encode())
             file = open(f"./{object_URL}", "rb")
             dedicated_socket.send(file.read())
+            file.close()
         else:
             not_found(client_ip_and_port[0], client_ip_and_port[1])
 
     elif object_URL == '/yt' or object_URL == '/so' or object_URL == '/rt':  # If the request is for '/yt', 'so', or 'rt', the server sends a 307 Temporary Redirect HTTP response to the client instructing the client to make a new request to the specified URL in the Location header.
         dedicated_socket.send("HTTP/1.1 307 Temporary Redirect\r\n".encode())
         dedicated_socket.send("Content-Type: text/html\r\n".encode())
+        location_header = "Location: "
         if object_URL == '/yt':
             location_header = "Location: https://www.youtube.com\r\n"
         elif object_URL == '/so':
