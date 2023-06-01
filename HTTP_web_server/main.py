@@ -1,22 +1,21 @@
 import os
 from socket import *
 
-server_name = "172.19.25.154"
-server_port = 9977
-listening_socket = socket(AF_INET, SOCK_STREAM)  # Creates a TCP socket for incoming requests
-listening_socket.bind((server_name, server_port))  # Assigns the host name (IP address) & port number to the server’s socket
-listening_socket.listen(1)  # The server listens for TCP connection requests from clients with 1 queued connection.
+server_name = "127.0.0.1"  # Host this web server on this IP address (loopback address).
+server_port = 9977  # Make this web server accessible through this port number.
+listening_socket = socket(AF_INET, SOCK_STREAM)  # Create a socket with address family (IPv4) and socket type (TCP).
+listening_socket.bind((server_name, server_port))  # Assign the host name (IP address) & port number to the server’s socket
+listening_socket.listen(1)  # The server listens for TCP connection requests from clients with 1 queued connection allowed.
 print("---------------------------------------------------")
 print("* The web server is ready to receive HTTP requests.")
 print("---------------------------------------------------")
+DEFAULT_ENCODING = 'UTF-8'
 
-
+# This function displays an error 404 (not found) webpage, indicating that the requested resource was not found, displaying the client's ip & port number on the webpage.
 def not_found(ip, port):
-    dedicated_socket.send("HTTP/1.1 404 Not Found \r\n".encode())  # in this case, the server sends a 404 Not Found HTTP response to the client
-    dedicated_socket.send("Content-Type: text/html \r\n".encode())  # type text HTML
-    dedicated_socket.send(
-        "\r\n".encode())  # HTML document containing a message indicating that the requested resource was not found
-    # includes information about our team's names and IDs ALSO IP and port of the server.
+    dedicated_socket.send("HTTP/1.1 404 Not Found \r\n".encode())
+    dedicated_socket.send("Content-Type: text/html \r\n".encode())
+    dedicated_socket.send("\r\n".encode())
     not_found_html = f"""<html>
                         <head>
                         <title>Error 404</title>
@@ -39,19 +38,18 @@ def not_found(ip, port):
                         </div>
                         </body>
                         </html>"""
-    # if the request is wrong or the file doesn’t exist the server should return a simple HTML webpage that contains with
-    not_found_html_bytes = bytes(not_found_html, "UTF-8")
-    dedicated_socket.send(not_found_html_bytes)
+    not_found_html_bytes = bytes(not_found_html, "UTF-8")  # Encode the webpage in the specified encoding.
+    dedicated_socket.send(not_found_html_bytes)  # Send the webpage's bytes through the dedicated socket to the client.
 
 
 while True:
-    dedicated_socket, client_ip_and_port = listening_socket.accept()  # When a client sends a TCP connection request create a socket dedicated to this client
-    HTTP_request = dedicated_socket.recv(2048).decode()
-    if HTTP_request == "" or HTTP_request.split(" ").__len__() < 2:
+    dedicated_socket, client_ip_and_port = listening_socket.accept()  # When a client sends a TCP connection request create a socket dedicated to this client.
+    HTTP_request = dedicated_socket.recv(2048).decode(DEFAULT_ENCODING)  # Decode the HTTP request received from the client and store it.
+    if HTTP_request == "" or HTTP_request.split(" ").__len__() < 2:  # When the request is empty, show a message in the server's console.
         print("Empty request received. Nothing to do.")
-        continue  # Skip handling if received empty request.
+        continue  # (Skip handling if received empty request).
     print("------------------------------------------------------------------------------------------------")
-    object_URL = HTTP_request.split(" ")[1]  # Get URL of requested resource (e.g. default HTTP request starts with "GET / HTTP/1.1").
+    object_URL = HTTP_request.split(" ")[1]  # Get the URL of the requested resource (e.g. default HTTP request starts with "GET / HTTP/1.1").
     print(f"** Serving client with IP ({client_ip_and_port[0]}) & port ({client_ip_and_port[1]}) with the following HTTP request of ({object_URL}):-")
     print("------------------------------------------------------------------------------------------------")
     print(HTTP_request)
@@ -65,7 +63,6 @@ while True:
             file = open("./main_en.html", "rb")
             dedicated_socket.send(file.read())
             file.close()
-            print("requested main")
         else:
             not_found(client_ip_and_port[0], client_ip_and_port[1])
 
@@ -136,10 +133,9 @@ while True:
             location_header = "Location: https://ritaj.birzeit.edu\r\n"
         dedicated_socket.send(location_header.encode())
         dedicated_socket.send("\r\n".encode())
-        dedicated_socket.close()  # close the connection since user is going to different website
+        dedicated_socket.close()  # Close the connection since the user is going to a different website
 
-    else:  # Requested resource type not supported
+    else:  # When the requested resource type is not supported.
         not_found(client_ip_and_port[0], client_ip_and_port[1])
-
-    if HTTP_request.__contains__("Connection: close\r\n"):  # Persistent connection until last request asks to close the socket connection.
-        dedicated_socket.close()  # close the connection
+    if HTTP_request.__contains__("Connection: close\r\n"):  # Keep socket open (Persistent Connection in HTTP/1.1) until a request asks to close the connection.
+        dedicated_socket.close()  # Close the connection since the user requested that in the HTTP header.

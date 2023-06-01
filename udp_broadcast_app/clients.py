@@ -1,3 +1,5 @@
+#  Custom data object that stores a set of clients' info (IP, name, last_ping_time).
+
 from client_data_type import ClientDataType
 
 

@@ -1,3 +1,5 @@
+#  Custom data object that stores a client's info (IP, name, last_ping_time).
+
 class ClientDataType:
     def __init__(self, ip, name, time):
         self.ip = ip
