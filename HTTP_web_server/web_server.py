@@ -11,6 +11,7 @@ print("* The web server is ready to receive HTTP requests.")
 print("---------------------------------------------------")
 DEFAULT_ENCODING = 'UTF-8'
 
+
 # This function displays an error 404 (not found) webpage, indicating that the requested resource was not found, displaying the client's ip & port number on the webpage.
 def not_found(ip, port):
     dedicated_socket.send("HTTP/1.1 404 Not Found \r\n".encode())
@@ -38,12 +39,12 @@ def not_found(ip, port):
                         </div>
                         </body>
                         </html>"""
-    not_found_html_bytes = bytes(not_found_html, "UTF-8")  # Encode the webpage in the specified encoding.
+    not_found_html_bytes = bytes(not_found_html, DEFAULT_ENCODING)  # Encode the webpage in the specified encoding.
     dedicated_socket.send(not_found_html_bytes)  # Send the webpage's bytes through the dedicated socket to the client.
 
 
 while True:
-    dedicated_socket, client_ip_and_port = listening_socket.accept()  # When a client sends a TCP connection request create a socket dedicated to this client.
+    dedicated_socket, client_ip_and_port = listening_socket.accept()  # When a client sends a TCP connection request, create a socket dedicated to this client.
     HTTP_request = dedicated_socket.recv(2048).decode(DEFAULT_ENCODING)  # Decode the HTTP request received from the client and store it.
     if HTTP_request == "" or HTTP_request.split(" ").__len__() < 2:  # When the request is empty, show a message in the server's console.
         print("Empty request received. Nothing to do.")
